@@ -6,7 +6,6 @@ import Rating from '../components/Rating';
 import { PRODUCT_REVIEW_SAVE_RESET } from '../constants/productConstants';
 
 function ProductScreen(props) {
-  const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const userSignin = useSelector((state) => state.userSignin);
@@ -41,7 +40,7 @@ function ProductScreen(props) {
     );
   };
   const handleAddToCart = () => {
-    props.history.push('/cart/' + props.match.params.id + '?qty=' + qty);
+    props.history.push('/cart/' + props.match.params.id + '?qty=' + 1);
   };
 
   return (
@@ -77,7 +76,7 @@ function ProductScreen(props) {
                 </li>
                 <li>
                   Description:
-                  <div>{product.description}</div>
+                  <div>{product.desc}</div>
                 </li>
               </ul>
             </div>
@@ -86,32 +85,12 @@ function ProductScreen(props) {
                 <li>Price: {product.price}</li>
                 <li>
                   Status:{' '}
-                  {product.countInStock > 0 ? 'In Stock' : 'Unavailable.'}
-                </li>
-                <li>
-                  Qty:{' '}
-                  <select
-                    value={qty}
-                    onChange={(e) => {
-                      setQty(e.target.value);
-                    }}
-                  >
-                    {[...Array(product.countInStock).keys()].map((x) => (
-                      <option key={x + 1} value={x + 1}>
-                        {x + 1}
-                      </option>
-                    ))}
-                  </select>
-                </li>
-                <li>
-                  {product.countInStock > 0 && (
                     <button
                       onClick={handleAddToCart}
                       className="button primary"
                     >
                       Add to Cart
                     </button>
-                  )}
                 </li>
               </ul>
             </div>

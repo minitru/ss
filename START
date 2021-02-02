@@ -1,8 +1,10 @@
 #/bin/bash
 #
 # ASSUMES PM2 IS INSTALLED... THIS JUST GETS IT STARTED
-#
+# THIS IS WRONG BTW - MUCH MESSIER WITH react
 cd backend
-pm2 start 
+npm start > /tmp/BACKEND 2>&1 &
 cd ../frontend
-pm2 start 
+npm start > /tmp/FRONTEND 2>&1 &
+
+tail -f /tmp/BACKEND

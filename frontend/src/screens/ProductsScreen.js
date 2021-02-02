@@ -4,19 +4,20 @@ import axios from 'axios';
 import {
   saveProduct,
   listProducts,
-  deleteProdcut,
+  deleteProduct,
 } from '../actions/productActions';
 
 function ProductsScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState('');
   const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
   const [image, setImage] = useState('');
-  const [brand, setBrand] = useState('');
-  const [category, setCategory] = useState('');
-  const [countInStock, setCountInStock] = useState('');
-  const [description, setDescription] = useState('');
+  const [tagline, setTagline] = useState('');
+  const [desc, setDesc] = useState('');
+  const [price, setPrice] = useState('');
+  const [intro, setIntro] = useState('');
+  const [tags, setTags] = useState('');
+  const [favs, setFavs] = useState('');
   const [uploading, setUploading] = useState(false);
   const productList = useSelector((state) => state.productList);
   const { loading, products, error } = productList;
@@ -50,12 +51,10 @@ function ProductsScreen(props) {
     setModalVisible(true);
     setId(product._id);
     setName(product.name);
-    setPrice(product.price);
-    setDescription(product.description);
     setImage(product.image);
-    setBrand(product.brand);
-    setCategory(product.category);
-    setCountInStock(product.countInStock);
+    setPrice(product.price);
+    setDesc(product.desc);
+    setTags(product.tags);
   };
   const submitHandler = (e) => {
     e.preventDefault();
@@ -65,15 +64,13 @@ function ProductsScreen(props) {
         name,
         price,
         image,
-        brand,
-        category,
-        countInStock,
-        description,
+        tags,
+        desc,
       })
     );
   };
   const deleteHandler = (product) => {
-    dispatch(deleteProdcut(product._id));
+    dispatch(deleteProduct(product._id));
   };
   const uploadFileHandler = (e) => {
     const file = e.target.files[0];
@@ -148,42 +145,16 @@ function ProductsScreen(props) {
                 {uploading && <div>Uploading...</div>}
               </li>
               <li>
-                <label htmlFor="brand">Brand</label>
-                <input
-                  type="text"
-                  name="brand"
-                  value={brand}
-                  id="brand"
-                  onChange={(e) => setBrand(e.target.value)}
-                ></input>
+                <label htmlFor="tags">Tags</label>
+                <input type="text" name="tags" value={tags} id="tags" onChange={(e) => setTags(e.target.value)} ></input>
               </li>
               <li>
-                <label htmlFor="countInStock">CountInStock</label>
-                <input
-                  type="text"
-                  name="countInStock"
-                  value={countInStock}
-                  id="countInStock"
-                  onChange={(e) => setCountInStock(e.target.value)}
-                ></input>
-              </li>
-              <li>
-                <label htmlFor="name">Category</label>
-                <input
-                  type="text"
-                  name="category"
-                  value={category}
-                  id="category"
-                  onChange={(e) => setCategory(e.target.value)}
-                ></input>
-              </li>
-              <li>
-                <label htmlFor="description">Description</label>
+                <label htmlFor="desc">Description</label>
                 <textarea
-                  name="description"
-                  value={description}
-                  id="description"
-                  onChange={(e) => setDescription(e.target.value)}
+                  name="desc"
+                  value={desc}
+                  id="desc"
+                  onChange={(e) => setDesc(e.target.value)}
                 ></textarea>
               </li>
               <li>
@@ -192,14 +163,12 @@ function ProductsScreen(props) {
                 </button>
               </li>
               <li>
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => setModalVisible(false)}
-                  className="button secondary"
-                >
+                  className="button secondary">
                   Back
                 </button>
-              </li>
+	      </li>
             </ul>
           </form>
         </div>
@@ -212,8 +181,8 @@ function ProductsScreen(props) {
               <th>ID</th>
               <th>Name</th>
               <th>Price</th>
-              <th>Category</th>
-              <th>Brand</th>
+              <th>Tags</th>
+              <th>Desc</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -223,8 +192,8 @@ function ProductsScreen(props) {
                 <td>{product._id}</td>
                 <td>{product.name}</td>
                 <td>{product.price}</td>
-                <td>{product.category}</td>
-                <td>{product.brand}</td>
+                <td>{product.tags}</td>
+                <td>{product.desc}</td>
                 <td>
                   <button className="button" onClick={() => openModal(product)}>
                     Edit

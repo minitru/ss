@@ -79,7 +79,7 @@ const detailsProduct = (productId) => async (dispatch) => {
   }
 };
 
-const deleteProdcut = (productId) => async (dispatch, getState) => {
+const deleteProduct = (productId) => async (dispatch, getState) => {
   try {
     const {
       userSignin: { userInfo },
@@ -124,6 +124,6 @@ export {
   listProducts,
   detailsProduct,
   saveProduct,
-  deleteProdcut,
+  deleteProduct,
   saveProductReview,
 };

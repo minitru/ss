@@ -8,6 +8,15 @@ import productRoute from './routes/productRoute';
 import orderRoute from './routes/orderRoute';
 import uploadRoute from './routes/uploadRoute';
 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("/home/sean/.ssh/star-166ac-firebase-adminsdk-mavao-98b7608a78.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://star-166ac-default-rtdb.firebaseio.com"
+});
+
 const mongodbUrl = config.MONGODB_URL;
 mongoose
   .connect(mongodbUrl, {
