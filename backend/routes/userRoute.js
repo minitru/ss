@@ -1,6 +1,6 @@
 import express from 'express';
 import User from '../models/userModel';
-import { getToken, isAuth } from '../util';
+import { getToken, isAuth, googleAuth } from '../util';
 
 const router = express.Router();
 
@@ -47,7 +47,14 @@ router.post('/register', async (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    googleid: req.body.googleid,
+    googletoken: req.body.userToken,
   });
+  
+  if (user.googletoken) {
+	  console.log("GOT GOOGLE TOKEN");
+	  googleAuth(user.googletoken);
+  }
   const newUser = await user.save();
   if (newUser) {
     res.send({
