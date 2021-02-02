@@ -1,5 +1,25 @@
 import jwt from 'jsonwebtoken';
 import config from './config';
+
+const googleAuth = (token) => {
+	const {OAuth2Client} = require('google-auth-library');
+	const client = new OAuth2Client("star-166ac");
+	async function verify() {
+  	const ticket = await client.verifyIdToken({
+      	idToken: token,
+      	audience: "star-166ac",  // Specify the CLIENT_ID of the app 
+  	});
+  	const payload = ticket.getPayload();A
+  	console.log(JSON.stringify(payload));
+
+  	const userid = payload['sub'];
+  	// If request specified a G Suite domain:
+  	// const domain = payload['hd'];
+	}
+	verify().catch(console.error);
+	console.log("USER VERIFIED OK");
+}
+
 const getToken = (user) => {
   return jwt.sign(
     {

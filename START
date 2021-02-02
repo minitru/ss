@@ -1,0 +1,8 @@
+#/bin/bash
+#
+# ASSUMES PM2 IS INSTALLED... THIS JUST GETS IT STARTED
+#
+cd backend
+pm2 start 
+cd ../frontend
+pm2 start 
