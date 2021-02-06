@@ -42,19 +42,54 @@ router.post('/signin', async (req, res) => {
   }
 });
 
+router.post('/tokenlogin', async (req, res) => {
+         const googleuser = await googleAuth(req.body.email, req.body.googleid, req.body.googletoken.i);
+	if (googleid) {
+	   	console.log("LOGGING IN USER");
+        const signinUser = await User.findOne({
+            email: req.body.email,
+            googleid: googleuser,
+        });
+        if (signinUser) {
+            res.send({
+            _id: signinUser.id,
+            name: signinUser.name,
+            email: signinUser.email,
+            isAdmin: signinUser.isAdmin,
+            token: getToken(signinUser),
+            });
+        } else {    // REGISTER AUTOMATICALLY
+	   	  console.log("AUTOREGISTER USER");
+          const user = new User({
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            googleid: googleid,
+            });
+
+            const newUser = await user.save();
+            if (newUser) {
+                res.send({
+                _id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                isAdmin: newUser.isAdmin,
+                token: getToken(newUser),
+                });
+            }
+        }
+    }
+    res.status(401).send({ message: 'Invalid token' });
+});
+
 router.post('/register', async (req, res) => {
+  console.log("CALLING REGISTER " + req.body.email);
   const user = new User({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    googleid: req.body.googleid,
-    googletoken: req.body.userToken,
   });
   
-  if (user.googletoken) {
-	  console.log("GOT GOOGLE TOKEN");
-	  googleAuth(user.googletoken);
-  }
   const newUser = await user.save();
   if (newUser) {
     res.send({
@@ -72,9 +107,9 @@ router.post('/register', async (req, res) => {
 router.get('/createadmin', async (req, res) => {
   try {
     const user = new User({
-      name: 'Basir',
-      email: 'admin@example.com',
-      password: '1234',
+      name: 'Sean',
+      email: 'sean@maclawran.ca',
+      password: 'doodoo',
       isAdmin: true,
     });
     const newUser = await user.save();
