@@ -43,43 +43,40 @@ router.post('/signin', async (req, res) => {
 });
 
 router.post('/tokenlogin', async (req, res) => {
-         const googleuser = await googleAuth(req.body.email, req.body.googleid, req.body.googletoken.i);
-	if (googleid) {
-	   	console.log("LOGGING IN USER");
-        const signinUser = await User.findOne({
-            email: req.body.email,
-            googleid: googleuser,
-        });
-        if (signinUser) {
-            res.send({
+    const signinUser = await User.findOne({
+        email: req.body.email,
+        googleid: req.body.googleid,
+    });
+    const id = await googleAuth(req, res);
+    console.log("RETURNED " + signinUser.id);
+    if (signinUser) {
+        res.send({
             _id: signinUser.id,
             name: signinUser.name,
             email: signinUser.email,
             isAdmin: signinUser.isAdmin,
             token: getToken(signinUser),
-            });
-        } else {    // REGISTER AUTOMATICALLY
-	   	  console.log("AUTOREGISTER USER");
-          const user = new User({
-            name: req.body.name,
+        });
+    } else {    // REGISTER AUTOMATICALLY
+	    console.log("AUTOREGISTER USER");
+        const user = new User({
+            name: req.body.name ||req.body.email,
             email: req.body.email,
-            password: req.body.password,
-            googleid: googleid,
-            });
+            password: req.body.password || "unused",
+            googleid: req.body.googleid,
+        });
 
-            const newUser = await user.save();
-            if (newUser) {
-                res.send({
+        const newUser = await user.save();
+        if (newUser) {
+            res.send({
                 _id: newUser.id,
                 name: newUser.name,
                 email: newUser.email,
                 isAdmin: newUser.isAdmin,
                 token: getToken(newUser),
-                });
-            }
+            });
         }
-    }
-    res.status(401).send({ message: 'Invalid token' });
+    } 
 });
 
 router.post('/register', async (req, res) => {
@@ -100,6 +97,7 @@ router.post('/register', async (req, res) => {
       token: getToken(newUser),
     });
   } else {
+    console.log("REGISTERING ERROR!");
     res.status(401).send({ message: 'Invalid User Data.' });
   }
 });

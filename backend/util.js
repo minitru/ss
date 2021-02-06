@@ -1,23 +1,31 @@
 import jwt from 'jsonwebtoken';
 import config from './config';
+import User from './models/userModel'
 
-const googleAuth = (token) => {
-	const {OAuth2Client} = require('google-auth-library');
-	const client = new OAuth2Client("star-166ac");
-	async function verify() {
-  	const ticket = await client.verifyIdToken({
-      	idToken: token,
-      	audience: "star-166ac",  // Specify the CLIENT_ID of the app 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("/home/sean/.ssh/star-166ac-firebase-adminsdk-mavao-98b7608a78.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://star-166ac-default-rtdb.firebaseio.com"
+});
+
+
+const googleAuth = (req, res) => {
+   console.log("CALLING GOOGLEAUTH " + req.body.email + " " + req.body.googleid);
+   const id = admin.auth().verifyIdToken(req.body.googletoken.i)
+  .then((decodedToken) => {
+	console.log("TOKEN DECODED OK " + JSON.stringify(decodedToken));
+    if (req.body.googleid == decodedToken.uid) {
+        console.log("USER AUTHED - RETURNING: " + id);
+        return
+     }
+	 else {
+		console.log("USER FAILED VERIFY");
+        return res.status(401).send({ message: 'Token is invalid.' });
+	 }
   	});
-  	const payload = ticket.getPayload();A
-  	console.log(JSON.stringify(payload));
-
-  	const userid = payload['sub'];
-  	// If request specified a G Suite domain:
-  	// const domain = payload['hd'];
-	}
-	verify().catch(console.error);
-	console.log("USER VERIFIED OK");
 }
 
 const getToken = (user) => {
@@ -61,4 +69,4 @@ const isAdmin = (req, res, next) => {
   return res.status(401).send({ message: 'Admin Token is not valid.' });
 };
 
-export { getToken, isAuth, isAdmin };
+export { googleAuth, getToken, isAuth, isAdmin };
