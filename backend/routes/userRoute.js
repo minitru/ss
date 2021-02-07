@@ -2,6 +2,15 @@ import express from 'express';
 import User from '../models/userModel';
 import { getToken, isAuth, googleAuth } from '../util';
 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("/home/sean/.ssh/star-166ac-firebase-adminsdk-mavao-98b7608a78.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://star-166ac-default-rtdb.firebaseio.com"
+});
+
 const router = express.Router();
 
 router.put('/:id', isAuth, async (req, res) => {
@@ -45,33 +54,52 @@ router.post('/signin', async (req, res) => {
 router.post('/tokenlogin', async (req, res) => {
     const signinUser = await User.findOne({
         email: req.body.email,
-        googleid: req.body.googleid,
-    });
-    const id = await googleAuth(req, res);
-    console.log("RETURNED " + signinUser.id);
-    if (signinUser) {
+        id: req.body.googleid,
+    }); 
+
+    const decodedToken = await admin.auth().verifyIdToken(req.body.googletoken.i)
+    if (decodedToken) {
+        console.log("TOKEN DECODED OK " + JSON.stringify(decodedToken));
+    }
+    else {
+        console.log("TOKEN DECODE FAILED");
+    }
+    // VERIFY THE TOKEN HERE
+    if (req.body.googleid == decodedToken.user_id) {
+        console.log("USER AUTHED OK");
+     }
+     else {
+        console.log("USER FAILED VERIFY");
+        return res.status(401).send({ message: 'Token is invalid.' });
+     }
+
+     if (signinUser) {
+        console.log("LOGIN EXISTING " + req.body.name);
         res.send({
-            _id: signinUser.id,
-            name: signinUser.name,
-            email: signinUser.email,
-            isAdmin: signinUser.isAdmin,
+            id: signinUser.id,
+            name: decodedToken.name || req.body.name,
+            email: decodedToken.email,
+            profile_photo: decodedToken.picture,
             token: getToken(signinUser),
+            isAdmin: signinUser.isAdmin,
         });
     } else {    // REGISTER AUTOMATICALLY
-	    console.log("AUTOREGISTER USER");
+	    console.log("AUTOREGISTER USER " + req.body.name);
         const user = new User({
-            name: req.body.name ||req.body.email,
-            email: req.body.email,
-            password: req.body.password || "unused",
-            googleid: req.body.googleid,
+            id: req.body.googleid,
+            name: decodedToken.name || req.body.name,
+            email: decodedToken.email,
+            profile_photo: decodedToken.picture,
+            password: "unused",  // PASSWORDS ARE IN GOOGLE
         });
 
         const newUser = await user.save();
         if (newUser) {
             res.send({
-                _id: newUser.id,
+                id: newUser.id,
                 name: newUser.name,
                 email: newUser.email,
+                profile_photo: decodedToken.picture,
                 isAdmin: newUser.isAdmin,
                 token: getToken(newUser),
             });
@@ -80,11 +108,12 @@ router.post('/tokenlogin', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  console.log("CALLING REGISTER " + req.body.email);
+  console.log("CALLING REGISTER " + req.body.name);
   const user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
+       id: req.body.googleid,
+       name: req.body.name,
+       email: req.body.email,
+       password: req.body.password || "unused",
   });
   
   const newUser = await user.save();
