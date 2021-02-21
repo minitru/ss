@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/userModel';
+import Product from '../models/productModel';
 import { getToken, isAuth, googleAuth } from '../util';
 
 var admin = require("firebase-admin");
@@ -74,7 +75,7 @@ router.post('/tokenlogin', async (req, res) => {
      }
 
      if (signinUser) {
-        console.log("LOGIN EXISTING " + req.body.name);
+        console.log("LOGIN EXISTING " + req.body.email);
         res.send({
             id: signinUser.id,
             name: decodedToken.name || req.body.name,
@@ -92,6 +93,13 @@ router.post('/tokenlogin', async (req, res) => {
             profile_photo: decodedToken.picture,
             password: "unused",  // PASSWORDS ARE IN GOOGLE
         });
+
+        const product = new Product({
+            id: req.body.googleid,
+            stageName: decodedToken.name || req.body.name,
+            headshot: decodedToken.picture,
+        });
+        const newProd = await product.save();
 
         const newUser = await user.save();
         if (newUser) {

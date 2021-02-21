@@ -4,6 +4,12 @@ import multerS3 from 'multer-s3';
 import aws from 'aws-sdk';
 import config from '../config';
 
+/*
+multer({
+  limits: { fieldSize: 25 * 1024 * 1024 }
+})
+*/
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, 'uploads/');
@@ -18,8 +24,9 @@ const upload = multer({ storage });
 const router = express.Router();
 
 router.post('/', upload.single('image'), (req, res) => {
-  res.send(`/${req.file.path}`);
-});
+  console.log("SENDING " + req.file.path);
+  res.send('http://starshout.net/' + req.file.path);
+})
 
 aws.config.update({
   accessKeyId: config.accessKeyId,

@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     ? req.query.sortOrder === 'lowest'
       ? { price: 1 }
       : { price: -1 }
-    : { _id: -1 };
+    : { id: -1 };
   const products = await Product.find({ ...category, ...searchKeyword }).sort(
     sortOrder
   );
@@ -26,7 +26,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const product = await Product.findOne({ _id: req.params.id });
+  console.log("GET PRODUCT " + req.params.id);
+  const product = await Product.findOne({ id: req.params.id });
   if (product) {
     res.send(product);
   } else {
@@ -55,15 +56,22 @@ router.post('/:id/reviews', isAuth, async (req, res) => {
     res.status(404).send({ message: 'Product Not Found' });
   }
 });
-router.put('/:id', isAuth, isAdmin, async (req, res) => {
+
+// SMM REMOVING ISAUTH FOR TESTING
+// router.put('/:id', isAuth, async (req, res) => {
+router.put('/:id', isAuth,  async (req, res) => {
   const productId = req.params.id;
-  const product = await Product.findById(productId);
+  console.log("PUT PROD " + req.params.id);
+  const product = await Product.findOne({ id: req.params.id });
   if (product) {
-    product.name = req.body.name;
-    product.image = req.body.image;
-    product.price = req.body.price;
-    product.desc = req.body.desc;
-    product.tags = req.body.tags;
+    console.log("FOUND PROD " + req.params.id);
+    product.stageName = req.body.stageName;
+    // product.headshot = req.body.headshot;
+    console.log("BODY " + JSON.stringify(req.body));
+    product.shoutPrice = req.body.shoutPrice;
+    product.promoAboutme = req.body.promoAboutme;
+    product.shoutTags = req.body.shoutTags;
+    product.shoutFavs = req.body.shoutFavs;
     const updatedProduct = await product.save();
     if (updatedProduct) {
       return res
@@ -84,7 +92,8 @@ router.delete('/:id', isAuth, isAdmin, async (req, res) => {
   }
 });
 
-router.post('/', isAuth, isAdmin, async (req, res) => {
+//router.post('/', isAuth, isAdmin, async (req, res) => {
+router.post('/', isAuth, async (req, res) => {
   const product = new Product({
     name: req.body.name,
     image: req.body.image,
