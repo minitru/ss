@@ -6,8 +6,11 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String, required: true, unique: true, index: true, dropDups: true,
   },
+  phone: { type: String, unique: true, required: false },
   profile_photo: { type: String, required: false },
   password: { type: String, required: true },
+  sponsor: { type: String, default: "sean", required: true },
+  shoutDate: {type: Date, required: true, default: Date.now},
   isAdmin: { type: Boolean, required: true, default: false },
 });
 

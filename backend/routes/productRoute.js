@@ -72,6 +72,7 @@ router.put('/:id', isAuth,  async (req, res) => {
     product.promoAboutme = req.body.promoAboutme;
     product.shoutTags = req.body.shoutTags;
     product.shoutFavs = req.body.shoutFavs;
+    product.headshot = req.body.headshot;
     const updatedProduct = await product.save();
     if (updatedProduct) {
       return res
