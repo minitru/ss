@@ -1,7 +1,8 @@
 import express from 'express';
 import User from '../models/userModel';
 import Product from '../models/productModel';
-import { getToken, isAuth, googleAuth } from '../util';
+import Invite from '../models/inviteModel';
+import { getToken, isAuth, googleAuth, sendSms } from '../util';
 
 var admin = require("firebase-admin");
 
@@ -139,18 +140,30 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.get('/createadmin', async (req, res) => {
-  try {
-    const user = new User({
-      name: 'Sean',
-      email: 'sean@maclawran.ca',
-      password: 'doodoo',
-      isAdmin: true,
-    });
-    const newUser = await user.save();
-    res.send(newUser);
-  } catch (error) {
-    res.send({ message: error.message });
+// INVITE A NEW USER
+router.post("/invite", async (req, res) => {
+  const invite = new Invite({
+       id: req.body.id,
+       name: req.body.name,
+       phone: req.body.phone
+  });
+
+  const signinUser = await User.findOne({
+    id: req.body.id,
+  });
+  if (!signinUser) {
+    res.status(401).send({ message: 'User not found.' })
+  }
+  const myname = signinUser.name;
+// DO TWILIO STUFF HERE
+  const sms = sendSms(myname, invite.name, invite.phone);
+  res.send({message: "invite sent"});
+
+  const newInvite = await invite.save();
+  if (newInvite) {
+    console.log("CALLING INVITE " + myname + " " + invite.name + " " + invite.phone);
+  } else {
+    res.status(404).send({ message: 'Work not found.' })
   }
 });
 

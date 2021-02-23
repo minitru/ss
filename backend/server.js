@@ -21,6 +21,7 @@ mongoose
 const app = express();
 app.use(bodyParser.json());
 app.use('/api/tokenlogin', userRoute);
+app.use('/api/invite', userRoute);
 app.use('/api/uploads', uploadRoute);
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);

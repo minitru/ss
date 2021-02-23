@@ -41,6 +41,8 @@ router.delete("/:orderId", isAuth, isAdmin, async (req, res) => {
 router.post("/", async (req, res) => {
     console.log("GOT REQ: " +req.body.id);
 
+// NEED TO ADD APPROVER IN HERE SOMEWHERE
+// OR IT'S ADDED LATER - WHEN NEEDED
   const newWork = new Work({
     id: req.body.id,
     orderId: req.body.orderId,
