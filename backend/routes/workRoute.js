@@ -8,17 +8,21 @@ const router = express.Router();
 // LEAVING IT IN FOR NOW
 // router.get("/", isAuth, async (req, res) => {
 router.get("/", async (req, res) => {
-  const works = await Work.find({}).populate('id');
+  const works = await Work.find({ id: "yDcCewXbdyfvZSjXYW2OhtUtss03"});
+  console.log("FIND WORK FOR " + req.body.id);
+  //const works = await Work.find({}).populate('id' );
   res.send(works);
 });
-router.get("/mine", isAuth, async (req, res) => {
-  const works = await Work.find({ id: req.id });
+router.get("/mine/:id", async (req, res) => {
+  const works = await Work.find({ id: req.params.id });
+  console.log("FIND MY WORK FOR " + req.params.id);
   res.send(works);
 });
 
 //router.get("/:orderId", isAuth, async (req, res) => {
 router.get("/:orderId", async (req, res) => {
   const work = await Work.findOne({ orderId: req.params.orderId });
+  console.log("FIND JOB FOR " + req.params.id);
   if (work) {
     res.send(work);
   } else {

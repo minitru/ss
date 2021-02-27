@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   profile_photo: { type: String, required: false },
   password: { type: String, required: true },
   sponsor: { type: String, default: "sean", required: true },
-  shoutDate: {type: Date, required: true, default: Date.now},
+  startDate: {type: Date, required: true, default: Date.now},
   isAdmin: { type: Boolean, required: true, default: false },
 });
 
