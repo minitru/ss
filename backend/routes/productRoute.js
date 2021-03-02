@@ -66,7 +66,7 @@ router.put('/:id', isAuth,  async (req, res) => {
   if (product) {
     console.log("FOUND PROD " + req.params.id);
     product.stageName = req.body.stageName;
-    // product.headshot = req.body.headshot;
+    product.headshot = req.body.headshot;
     console.log("BODY " + JSON.stringify(req.body));
     product.shoutPrice = req.body.shoutPrice;
     product.promoAboutme = req.body.promoAboutme;

@@ -86,7 +86,7 @@ router.post('/tokenlogin', async (req, res) => {
             isAdmin: signinUser.isAdmin,
         });
     } else {    // REGISTER AUTOMATICALLY
-	    console.log("AUTOREGISTER USER " + req.body.name);
+	    console.log("AUTOREGISTER USER " + req.body.email);
         const user = new User({
             id: req.body.googleid,
             name: decodedToken.name || req.body.name,
