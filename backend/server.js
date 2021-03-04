@@ -26,6 +26,7 @@ app.use('/api/uploads', uploadRoute);
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);
 app.use('/api/orders', orderRoute);
+app.use('/api/work/auth', workRoute);
 app.use('/api/work', workRoute);
 /*
 app.get('/api/config/paypal', (req, res) => {

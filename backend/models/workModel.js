@@ -1,13 +1,9 @@
 import mongoose from 'mongoose';
 
-const groupSchema = new mongoose.Schema({
-    name: { type: String, default: "starshout", required: true },
-});
-
 const workSchema = new mongoose.Schema({
-  group: [groupSchema],
+  group: { type: String, required: true, default: "starshout" },
   id: { type: String, required: true },
-  approver: { type: String, default: "sean", required: true },
+  approver: { type: String, default: "yDcCewXbdyfvZSjXYW2OhtUtss03", required: true },
 
   orderId: { type: Number, unique: true, required: true },
   orderStatus: { type: String, required: true },
@@ -22,7 +18,10 @@ const workSchema = new mongoose.Schema({
   onscreendesc: { type: String, required: false },
   imgfile: { type: String, required: false },
   ovfile: { type: String, required: false },
-  secondVideo: { type: String, required: false }
+  secondVideo: { type: String, required: false },
+  messages: [String],
+  charity: { type: String, required: false },
+  charitypct: { type: Number, required: false}
 });
 
 const workModel = mongoose.model('Work', workSchema);

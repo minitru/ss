@@ -1,17 +1,22 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
+  group: { type: String, required: true, default: "starshout" },
+  country: { type: String, default: "US", required: true },
+  lang: { type: String, default: "EN", required: true },
   id: { type: String, required: true },
   name: { type: String, required: true },
   email: {
     type: String, required: true, unique: true, index: true, dropDups: true,
   },
-  phone: { type: String, unique: true, required: false },
   profile_photo: { type: String, required: false },
+  city: { type: String, required: false },
+  phone: { type: String, unique: false, required: false },
   password: { type: String, required: true },
-  sponsor: { type: String, default: "sean", required: true },
+  sponsor: { type: String, default: "yDcCewXbdyfvZSjXYW2OhtUtss03", required: true },
   startDate: {type: Date, required: true, default: Date.now},
-  isAdmin: { type: Boolean, required: true, default: false },
+  charity: { type: String, required: false },
+  charitypct: { type: Number, required: false },
 });
 
 const userModel = mongoose.model('User', userSchema);
