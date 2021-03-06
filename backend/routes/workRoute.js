@@ -22,7 +22,11 @@ router.put("/:orderId/auth", async (req, res) => {
     var neworderStatus = work.orderStatus;
     if (req.body.auth == 'deny') { 
         console.log("DENY!");
+      if (work.orderStatus == 'qa') {   // REDO THIS SHOUT
+        neworderStatus = 'redo';
+      } else {
         neworderStatus = 'deny';
+      }
     } else {
       if (work.orderStatus == 'preauth') {
         neworderStatus = 'auth';
@@ -63,9 +67,13 @@ router.get("/:id/auth", async (req, res) => {
 
 // GET WORK FOR A USER
 router.get("/:id/todo", async (req, res) => {
-  // const works = await Work.find({ id: "yDcCewXbdyfvZSjXYW2OhtUtss03"});
-  console.log("FIND TODOS FOR " + req.params.id);
-  const works = await Work.find( { $and: [ { id: req.params.id}, {orderStatus: "active"} ] });
+  console.log("FIND TODOS / REDOS FOR " + req.params.id);
+  const works = await Work.find( { 
+  $and: [ 
+    { $and: [ {id: req.params.id} ] },
+    { $or: [ {orderStatus: "active"}, {orderStatus: "redo"} ] }
+    ] });
+  // const works = await Work.find( { $and: [ { id: req.params.id}, {orderStatus: "active"} ] });
   res.send(works);
 });
 
