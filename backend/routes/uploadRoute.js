@@ -3,6 +3,7 @@ import multer from 'multer';
 import multerS3 from 'multer-s3';
 import aws from 'aws-sdk';
 import config from '../config';
+import path from 'path';
 
 /*
 multer({
@@ -15,7 +16,13 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}.jpg`);
+    let xdate = Date.now().toString();
+    const fileName = (xdate + file.originalname).toLowerCase().split(' ').join('-');
+    //let fileName = xdate + path.basename(file);
+    console.log("FILENAME " + fileName);
+    //cb(null, `${Date.now()+path.basename(filename)}.jpg`);
+    // let fileName = file.originalname.toLowerCase().split(' ').join('-');
+    cb(null, fileName);
   },
 });
 

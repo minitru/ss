@@ -54,6 +54,7 @@ router.post('/signin', async (req, res) => {
 });
 
 router.post('/tokenlogin', async (req, res) => {
+    console.log("TOKENLOGIN " + req.body.email);
     const signinUser = await User.findOne({
         email: req.body.email,
         id: req.body.googleid,

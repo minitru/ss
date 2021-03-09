@@ -10,16 +10,19 @@ const router = express.Router();
 // REMEMBER TO SEND TYPE JSON
 // req.params ARE IN THE COMMAND LINE, req.body IS THE JSON
 router.put("/:orderId/auth", async (req, res) => {
-  console.log("AUTH PUT" + req.params.orderId);
+  console.log("AUTH PUT " + req.params.orderId);
   console.log("USERID " + req.body.id + " " + req.body.auth);
 
   // IF IT'S AN AUTH AND IT'S THE TALENT, THEN THE STATUS GOES RIGHT TO
   // ACTIVE. IF IT'S THEIR SPONSOR, IT GOES FROM preauth -> auth
   // I'M NOT SURE ABOUT THIS AT ALL
-  const work = await Work.findOne({ orderId: req.params.orderId });
+  var orderId = parseInt(req.params.orderId);
+  const work = await Work.findOne({ orderId: orderId });
   if (work) {
-    var newMessages = work.messages;
     var neworderStatus = work.orderStatus;
+    var newvideomsg = work.videomsg;
+    var newMessages = [];
+
     if (req.body.auth == 'deny') { 
         console.log("DENY!");
       if (work.orderStatus == 'qa') {   // REDO THIS SHOUT
@@ -34,15 +37,30 @@ router.put("/:orderId/auth", async (req, res) => {
       if (work.orderStatus == 'auth') {
           neworderStatus = 'active';
       }
+      // GOES INTO POSTPRODUCTION AFTER ACTIVE
+      if (work.orderStatus == 'active' || work.orderStatus == 'redo') {    
+        if (req.body.videomsg) {
+            console.log("COMPLETED STARSHOUT " + req.body.videomsg);
+            newvideomsg = req.body.videomsg;
+            neworderStatus = 'post';
+        }
+        else {
+            res.status(401).send("Error: missing video")
+        }
+      }
       if (work.orderStatus == 'qa') {
           neworderStatus = 'delivery';
       }
     }
+    // THIS IS BROKEN AND IS REMOVING MESSAGES
     if (req.body.message) {
-       newMessages.push(req.body.message);
+      console.log("ADD MESSAGE " + req.body.message);
+        newMessages = work.messages;
+        newMessages.push(req.body.message);
     }
 
-    const updateWork = await work.updateOne({orderStatus: neworderStatus, messages: newMessages});
+    const updateWork = await work.updateOne({orderStatus: neworderStatus, messages: newMessages, videomsg: newvideomsg });
+     console.log("UPDATED WORK " + neworderStatus + " " + JSON.stringify(updateWork));
     res.send(updateWork);
   } else {
     res.status(404).send("Work Not Found.")
@@ -120,6 +138,7 @@ router.post("/", async (req, res) => {
     onscreendesc: req.body.onscreendesc,
     imgfile: req.body.imgfile,
     ovfile: req.body.ovfile,
+    videomsg: req.body.videomsg,
     secondvideo: req.body.secondvideo,
   });
   const newWorkCreated = await newWork.save();

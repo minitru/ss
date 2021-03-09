@@ -18,8 +18,9 @@ const workSchema = new mongoose.Schema({
   onscreendesc: { type: String, required: false },
   imgfile: { type: String, required: false },
   ovfile: { type: String, required: false },
+  videomsg: { type: String, required: false },
   secondVideo: { type: String, required: false },
-  messages: [String],
+  messages: { type: [String], required: false },
   charity: { type: String, required: false },
   charitypct: { type: Number, required: false}
 });
