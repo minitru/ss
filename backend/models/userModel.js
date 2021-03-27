@@ -1,5 +1,21 @@
 import mongoose from 'mongoose';
 
+const giftSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true },
+    code: { type: Number, required: true },
+    expires: { type: Date, default: new Date(+new Date() + 2*24*60*60*1000), required: true },
+  }
+);
+
+const inviteSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true },
+    code: { type: Number, required: true },
+    expires: { type: Date, default: new Date(+new Date() + 2*24*60*60*1000), required: true },
+  }
+);
+
 const userSchema = new mongoose.Schema({
   group: { type: String, required: true, default: "starshout" },
   country: { type: String, default: "US", required: true },

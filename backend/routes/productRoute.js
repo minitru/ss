@@ -34,6 +34,7 @@ router.get('/:id', async (req, res) => {
     res.status(404).send({ message: 'Product Not Found.' });
   }
 });
+
 router.post('/:id/reviews', isAuth, async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
@@ -64,15 +65,16 @@ router.put('/:id', isAuth,  async (req, res) => {
   console.log("PUT PROD " + req.params.id);
   const product = await Product.findOne({ id: req.params.id });
   if (product) {
+    console.log("BODY " + JSON.stringify(req.body));
     console.log("FOUND PROD " + req.params.id);
     product.stageName = req.body.stageName;
     product.headshot = req.body.headshot;
-    console.log("BODY " + JSON.stringify(req.body));
     product.shoutPrice = req.body.shoutPrice;
     product.promoAboutme = req.body.promoAboutme;
     product.shoutTags = req.body.shoutTags;
     product.shoutFavs = req.body.shoutFavs;
     product.headshot = req.body.headshot;
+    product.secondVideo = req.body.secondVideo;
     const updatedProduct = await product.save();
     if (updatedProduct) {
       return res

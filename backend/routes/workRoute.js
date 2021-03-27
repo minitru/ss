@@ -79,6 +79,7 @@ router.get("/:id/auth", async (req, res) => {
     { $or: [ {id: req.params.id}, {approver: req.params.id} ] },
     { $or: [ {orderStatus: "preauth"}, {orderStatus: "auth"}, {orderStatus: "qa"} ] }
     ] });
+    console.log("RETURNING " + JSON.stringify(works));
   res.send(works);
 });
 

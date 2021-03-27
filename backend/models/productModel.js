@@ -34,8 +34,8 @@ const productSchema = new mongoose.Schema({
   shoutFavs: { type: String, default: "shoutouts", required: true },
   // THIS MAY BE PART OF A STARSHOUT PROMO JOB...
   promoVideo: { type: String, required: false },
-  promoVideoCaption: { type: String, default: "Order a Starshout from me!", required: true },
-  shoutPerformance: { type: String, required: false },
+  promoVideoCaption: { type: String, default: "Order a Starshout from me!", required: false },
+  secondVideo: { type: String, required: false },
 
   rating: { type: Number, default: 0, required: true },
   numReviews: { type: Number, default: 0, required: true },

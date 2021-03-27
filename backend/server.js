@@ -3,10 +3,12 @@ import path from 'path';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import config from './config';
+
 import userRoute from './routes/userRoute';
 import productRoute from './routes/productRoute';
 import orderRoute from './routes/orderRoute';
 import workRoute from './routes/workRoute';
+import codeRoute from './routes/codeRoute';
 import uploadRoute from './routes/uploadRoute';
 
 const mongodbUrl = config.MONGODB_URL;
@@ -20,8 +22,8 @@ mongoose
 
 const app = express();
 app.use(bodyParser.json());
+app.use('/api/code', codeRoute);
 app.use('/api/tokenlogin', userRoute);
-app.use('/api/invite', userRoute);
 app.use('/api/uploads', uploadRoute);
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);
