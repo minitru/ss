@@ -9,6 +9,7 @@ const codeSchema = new mongoose.Schema(
     codetype: {type: Number, required: true},
     code: { type: Number, unique: true, required: true },
     expires: { type: Date, default: new Date(+new Date() + 2*24*60*60*1000), required: true },
+    redeemed: { type: Date, required: false },
   }
 );
 
